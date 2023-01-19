@@ -48,8 +48,6 @@ export default class Peer {
             }
         }, signal)
 
-
-
         const dc = pc.createDataChannel('both', { negotiated: true, id: 0 })
 
         this.pc = pc
@@ -64,9 +62,14 @@ export default class Peer {
                 // we also close the message channel as we do not need it anymore
                 trickle = true
                 send = (msg) => dc.send(JSON.stringify(msg))
+                // Cleanup
                 port1.close()
                 port2.close()
-                this.ready = port2 = port1 = port2.onmessage = null
+                this.ready =
+                port2 =
+                port1 =
+                port1.onmessage =
+                port2.onmessage = null
                 rs()
             }, { once: true, ...signal })
         })

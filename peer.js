@@ -100,9 +100,13 @@ export default class Peer {
         }, { ...signal })
 
         async function onmessage({ data }) {
-            const { description, candidate } = typeof data === 'string' ? JSON.parse(data) : data
+            if (typeof data === 'string' && (data.includes('"description"') || data.includes('"candidate"'))) {
+                try { data = JSON.parse(data) } catch (err) { }
+            }
 
-            if (description) {
+            if (data?.description) {
+                const description = data.description
+
                 const offerCollision = description.type == 'offer' &&
                     (makingOffer || pc.signalingState != 'stable')
 
@@ -128,8 +132,8 @@ export default class Peer {
                     if (!trickle) await waitToCompleteIceGathering(pc, 'new')
                     send({ description: pc.localDescription })
                 }
-            } else if (candidate) {
-                await pc.addIceCandidate(candidate)
+            } else if (data?.candidate) {
+                await pc.addIceCandidate(data.candidate)
             }
         }
 

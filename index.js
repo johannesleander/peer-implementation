@@ -9,10 +9,8 @@ const peer2 = new Peer({
     polite: true, // the peer that says you go ahead I will rollback on colision
     trickle: false, // default
 })
-globalThis.peer1 = peer1
-globalThis.peer2 = peer2
 
-// only used to signal description and candidates to the other peer
+// Only used to signal description and candidates to the other peer
 // once a connection is establish the DataChannel takes over.
 peer1.signalingPort.onmessage = ({ data }) => {
     peer2.signalingPort.postMessage(data)
@@ -26,7 +24,7 @@ peer2.signalingPort.onmessage = ({ data }) => {
 await peer1.ready
 
 peer1.dc.onmessage = evt => console.log(evt.data)
-peer1.dc.send(JSON.stringify("Hello from peer1"))
+peer1.dc.send("Hello from peer1")
 
 peer2.dc.onmessage = evt => console.log(evt.data)
-peer2.dc.send(JSON.stringify("Hello from peer2"))
+peer2.dc.send("Hello from peer2")

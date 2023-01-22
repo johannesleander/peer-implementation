@@ -1,5 +1,5 @@
-import './install-sw.js'
-import { Chord } from './chord.js'
+import './src/install-sw.js'
+import { Chord } from './src/chord.js'
 
 const chord = new Chord()
 
@@ -7,7 +7,7 @@ $setMaster.onclick = async () => {
   let subscription = await chord.getPushSubscription()
   if (!subscription) subscription = await chord.subScribeToPush()
 
-  await fetch('http://localhost:3000/set-peer-with-push', {
+  await fetch('/set-peer-with-push', {
     method: 'POST',
     body: JSON.stringify(subscription)
   }).then(res => res.arrayBuffer())

@@ -53,7 +53,8 @@ export default class Peer {
     this.polite = polite
     this.signalingPort = port1
 
-    this.ready = new Promise((rs) => {
+    /** @type {Promise<void>} */
+    this.ready = new Promise(rs => {
       dc.addEventListener('open', () => {
         // At this point we start to trickle over datachannel instead
         // we also close the message channel as we do not need it anymore
@@ -62,11 +63,9 @@ export default class Peer {
         // Cleanup
         port1.close()
         port2.close()
-        this.ready =
-        port2 =
-        port1 =
-        port1.onmessage =
-        port2.onmessage = null
+        // @ts-ignore
+        port2 = port1 =
+        port1.onmessage = port2.onmessage = null
         rs()
       }, { once: true, ...signal })
     })
@@ -89,6 +88,7 @@ export default class Peer {
         send({ description: pc.localDescription })
       } else {
         await waitToCompleteIceGathering(pc)
+        // @ts-ignore
         const description = pc.localDescription.toJSON()
         description.sdp = description.sdp.replace(/a=ice-options:trickle\s\n/g, '')
         send({ description })

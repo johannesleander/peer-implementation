@@ -11,7 +11,7 @@ const encryptionHelper = new EncryptionHelperAES128GCM({
   vapidKeys: APPLICATION_KEYS,
   // contact information for push service to contact you
   // in case of problem. It's either a mailto: or https: link
-  subject: location.origin
+  subject: 'https://example.com/contact',
 })
 
 const textEncoder = new TextEncoder()

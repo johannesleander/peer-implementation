@@ -1,5 +1,5 @@
 import { createServer } from 'node:http'
-import { createReadStream, createWriteStream } from 'node:fs'
+import { createReadStream, createWriteStream, existsSync } from 'node:fs'
 import { platform } from 'node:process'
 import { exec } from 'node:child_process'
 
@@ -79,15 +79,18 @@ const tinyRouter = {
 
       fetch(request.url, {
         method: request.method,
-        headers: JSON.parse(request.headers),
+        headers: {
+          ...JSON.parse(request.headers),
+          Urgency: 'high',
+        },
         body: request.body
       }).then(res => {
         // console.log('ok', res.ok)
         // console.log('status', res.status)
         // console.log('statusText', res.statusText)
         // console.log('headers', res.headers)
-        res.arrayBuffer()
-        // .then(console.log)
+        res.text()
+        .then(console.log)
       })
     })
   }
@@ -109,6 +112,7 @@ const server = createServer((req, res) => {
     const file = directory + pathname
 
     try {
+      if (!existsSync(file)) throw new Error('File not found')
       const rs = createReadStream(file)
       // figure out the content type
       const ext = file.split('.').pop()

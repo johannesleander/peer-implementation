@@ -1,3 +1,4 @@
+const invisiblePngPixel = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYGD4z8ABHgAH9gKxvwAAAABJRU5ErkJggg=='
 
 addEventListener('fetch', evt => {
   if (evt.request.url.endsWith('/chord/clientId')) {
@@ -13,10 +14,22 @@ addEventListener('push', async evt => {
   const bc = new BroadcastChannel('push')
   bc.postMessage(payload)
   bc.close()
+
+  const notificationOptions = {
+    body: 'Established a P2P connection',
+    icon: invisiblePngPixel,
+    badge: invisiblePngPixel,
+    tag: 'establish-p2p-connection'
+	};
+
+  evt.waitUntil(
+    registration.showNotification(
+      'Received Payload',
+      notificationOptions
+    ).catch(console.error)
+  )
 })
 
-addEventListener('message', evt => {
-  evt.waitUntil(new Promise(rs => {
-    // nah, i'm good
-  }))
-})
+self.addEventListener('notificationclick', evt => {
+  evt.notification.close();
+});

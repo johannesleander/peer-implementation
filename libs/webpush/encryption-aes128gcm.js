@@ -60,23 +60,8 @@ export default class EncryptionHelperAES128GCM {
    */
   async getRequestDetails (subscription, payload) {
     let endpoint = subscription.endpoint
-    const useV2 = endpoint.indexOf('https://fcm.googleapis.com') === 0
 
-    // Latest spec changes for VAPID is implemented on this custom FCM
-    // endpoint. This is experimental and SHOULD NOT BE USED IN PRODUCTION
-    // web apps.
-    //
-    // Need to get a proper feature detect in place for these vapid changes
-    // https://github.com/mozilla-services/autopush/issues/879
-    if (useV2) {
-      endpoint = endpoint.replace('fcm/send', 'wp')
-    }
-
-    /** @type {{default: import('./vapid-helper-2.js').default }} */
-    const { default: createVapidAuthHeader } = await import(useV2
-      ? './vapid-helper-2.js'
-      : './vapid-helper-1.js'
-    )
+    const { default: createVapidAuthHeader } = await import('./vapid-helper-2.js')
 
     const vapidHeaders = await createVapidAuthHeader(
       this.vapidKeys,
